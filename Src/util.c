@@ -417,32 +417,32 @@ void UART_DisableRxErrors(UART_HandleTypeDef *huart)
 /* =========================== General Functions =========================== */
 
 void poweronMelody(void) {
-    buzzerCount = 0;  // prevent interraction with beep counter
-    for (int i = 8; i >= 0; i--) {
-      buzzerFreq = (uint8_t)i;
-      HAL_Delay(100);
-    }
-    buzzerFreq = 0;
+    // buzzerCount = 0;  // prevent interraction with beep counter
+    // for (int i = 8; i >= 0; i--) {
+    //   buzzerFreq = (uint8_t)i;
+    //   HAL_Delay(100);
+    // }
+    // buzzerFreq = 0;
 }
 
 void beepCount(uint8_t cnt, uint8_t freq, uint8_t pattern) {
-    buzzerCount   = cnt;
-    buzzerFreq    = freq;
-    buzzerPattern = pattern;
+    // buzzerCount   = cnt;
+    // buzzerFreq    = freq;
+    // buzzerPattern = pattern;
 }
 
 void beepLong(uint8_t freq) {
-    buzzerCount = 0;  // prevent interraction with beep counter
-    buzzerFreq = freq;
-    HAL_Delay(500);
-    buzzerFreq = 0;
+    // buzzerCount = 0;  // prevent interraction with beep counter
+    // buzzerFreq = freq;
+    // HAL_Delay(500);
+    // buzzerFreq = 0;
 }
 
 void beepShort(uint8_t freq) {
-    buzzerCount = 0;  // prevent interraction with beep counter
-    buzzerFreq = freq;
-    HAL_Delay(100);
-    buzzerFreq = 0;
+    // buzzerCount = 0;  // prevent interraction with beep counter
+    // buzzerFreq = freq;
+    // HAL_Delay(100);
+    // buzzerFreq = 0;
 }
 
 void beepShortMany(uint8_t cnt, int8_t dir) {
@@ -1568,7 +1568,8 @@ void poweroff(void) {
   for (int i = 0; i < 8; i++) {
     buzzerFreq = (uint8_t)i;
     HAL_Delay(100);
-  }
+  } 
+  buzzerFreq=0;
   saveConfig();
   HAL_GPIO_WritePin(OFF_PORT, OFF_PIN, GPIO_PIN_RESET);
   while(1) {}

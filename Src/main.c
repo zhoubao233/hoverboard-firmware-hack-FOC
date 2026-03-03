@@ -178,7 +178,7 @@ int main(void) {
   /* System interrupt init*/
   /* MemoryManagement_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(MemoryManagement_IRQn, 0, 0);
-  /* BusFault_IRQn interrupt configuration */
+  /* BusFault_IRQn interrupt configuration */ 
   HAL_NVIC_SetPriority(BusFault_IRQn, 0, 0);
   /* UsageFault_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(UsageFault_IRQn, 0, 0);
@@ -212,7 +212,10 @@ int main(void) {
   
   int32_t board_temp_adcFixdt = adc_buffer.temp << 16;  // Fixed-point filter output initialized with current ADC converted to fixed-point
   int16_t board_temp_adcFilt  = adc_buffer.temp;
-
+  // while(1)
+  // {
+    
+  // }
   #ifdef MULTI_MODE_DRIVE
     if (adc_buffer.l_tx2 > input1[0].min + 50 && adc_buffer.l_rx2 > input2[0].min + 50) {
       drive_mode = 2;
