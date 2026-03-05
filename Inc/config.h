@@ -9,17 +9,19 @@
 // Keil uVision: select desired variant from the Target drop down menu (to the right of the Load button)
 // Ubuntu: define the desired build variant here if you want to use make in console
 // or use VARIANT environment variable for example like "make -e VARIANT=VARIANT_NUNCHUK". Select only one at a time.
+
 #if !defined(PLATFORMIO)
-  //#define VARIANT_ADC         // Variant for control via ADC input
-  //#define VARIANT_USART       // Variant for Serial control via USART3 input
-  //#define VARIANT_NUNCHUK     // Variant for Nunchuk controlled vehicle build
-  //#define VARIANT_PPM         // Variant for RC-Remote with PPM-Sum Signal
-  //#define VARIANT_PWM         // Variant for RC-Remote with PWM Signal
-  //#define VARIANT_IBUS        // Variant for RC-Remotes with FLYSKY IBUS
-  //#define VARIANT_HOVERCAR    // Variant for HOVERCAR build
-  //#define VARIANT_HOVERBOARD  // Variant for HOVERBOARD build
-  //#define VARIANT_TRANSPOTTER // Variant for TRANSPOTTER build https://github.com/NiklasFauth/hoverboard-firmware-hack/wiki/Build-Instruction:-TranspOtter https://hackaday.io/project/161891-transpotter-ng
-  //#define VARIANT_SKATEBOARD  // Variant for SKATEBOARD build
+  // ======= 基础控制输入模式 =======
+  // #define VARIANT_ADC         // ADC模式：使用电位器、油门踏板或模拟摇杆控制（通过电压变化）
+  // #define VARIANT_USART       // 串口模式：通过串口(UART)发送二进制指令控制（适合接Arduino、树莓派、电脑）
+  // #define VARIANT_NUNCHUK     // 遥控器模式：使用任天堂 Wii Nunchuk 手柄控制（I2C通讯）
+  // #define VARIANT_PPM         // PPM模式：使用航模遥控器接收机的 PPM 信号控制（单线多通道）
+  // #define VARIANT_PWM         // PWM模式：使用标准航模接收机的 PWM 舵机信号控制（每个通道一根线）
+  // #define VARIANT_IBUS        // IBUS模式：使用富斯(FlySky)遥控器的数字 IBUS 协议控制
+  #define VARIANT_HOVERCAR    // 漂移卡丁车模式：针对加装了卡丁车支架的平衡车，优化了差速和转向逻辑
+  // #define VARIANT_HOVERBOARD  // 原生平衡模式：启用内部陀螺仪，维持两轮自平衡（最原始的平衡车功能）
+  // #define VARIANT_TRANSPOTTER // 搬运机器人模式：专为 TranspOtter 开源搬运平台设计，强调大扭矩和精准移动https://github.com/NiklasFauth/hoverboard-firmware-hack/wiki/Build-Instruction:-TranspOtter https://hackaday.io/project/161891-transpotter-ng
+  // #define VARIANT_SKATEBOARD  // 电动滑板模式：针对电动滑板设计，加速和刹车曲线更平滑，防止摔倒
 #endif
 // ########################### END OF VARIANT SELECTION ############################
 
@@ -334,8 +336,10 @@
     #define AUX_INPUT1           3, -1000, 0, 1000, 0     // TYPE, MIN, MID, MAX, DEADBAND. See INPUT FORMAT section
     #define AUX_INPUT2           3, -1000, 0, 1000, 0     // TYPE, MIN, MID, MAX, DEADBAND. See INPUT FORMAT section
   #else
+
     #define FLASH_WRITE_KEY      0x1002  // Flash memory writing key. Change this key to ignore the input calibrations from the flash memory and use the ones in config.h
-  #endif
+    
+    #endif
 
   // #define TANK_STEERING              // use for tank steering, each input controls each wheel 
   // #define SUPPORT_BUTTONS_LEFT       // use left sensor board cable for button inputs.  Disable DEBUG_SERIAL_USART2!
@@ -507,6 +511,7 @@
   #undef  CTRL_MOD_REQ
   #define CTRL_MOD_REQ            VLT_MODE  // HOVERCAR works best in TORQUE Mode. VOLTAGE mode is preffered when freewheeling is not desired when throttle is released.
   #define CONTROL_ADC             0         // use ADC as input. Number indicates priority for dual-input. Disable CONTROL_SERIAL_USART2, FEEDBACK_SERIAL_USART2, DEBUG_SERIAL_USART2!
+  /*把串口按钮变成输入信号 */
   #define SIDEBOARD_SERIAL_USART3 1         // Rx from right sensor board: to use photosensors as buttons. Number indicates priority for dual-input. Comment-out if sideboard is not used!
   #define FEEDBACK_SERIAL_USART3            // Tx to   right sensor board: for LED battery indication. Comment-out if sideboard is not used!
 
@@ -521,11 +526,18 @@
   // #define ADC_ALTERNATE_CONNECT             // use to swap ADC inputs
   // #define INVERT_R_DIRECTION                // Invert rotation of right motor
   // #define INVERT_L_DIRECTION                // Invert rotation of left motor
+/******************************/
   // #define DEBUG_SERIAL_USART3               // right sensor board cable, disable if I2C (nunchuk or lcd) is used!
+  // #define CONTROL_SERIAL_USART3  1    // left sensor board cable, disable if ADC or PPM is used! For Arduino control check the hoverSerial.ino
+  // #define FEEDBACK_SERIAL_USART3      // left sensor board cable, disable if ADC or PPM is used!
+/******************************/
 
   // Extra functionality
+  /*巡航控制 (CRUISE_CONTROL_SUPPORT)：可以通过按键锁定当前速度 */
   // #define CRUISE_CONTROL_SUPPORT            // [-] Flag to enable Cruise Control support. Activation/Deactivation is done by sideboard button or Brake pedal press.
+  /*驻车制动 (STANDSTILL_HOLD_ENABLE)：静止时电机会锁死，防止溜坡。*/
   // #define STANDSTILL_HOLD_ENABLE            // [-] Flag to hold the position when standtill is reached. Only available and makes sense for VOLTAGE or TORQUE mode.
+  /*电子制动 (ELECTRIC_BRAKE_ENABLE)：当油门完全松开时，自动施加一定的反向阻力（模拟引擎制动）。*/
   // #define ELECTRIC_BRAKE_ENABLE             // [-] Flag to enable electric brake and replace the motor "freewheel" with a constant braking when the input torque request is 0. Only available and makes sense for TORQUE mode.
   // #define ELECTRIC_BRAKE_MAX    100         // (0, 500) Maximum electric brake to be applied when input torque request is 0 (pedal fully released).
   // #define ELECTRIC_BRAKE_THRES  120         // (0, 500) Threshold below at which the electric brake starts engaging.
